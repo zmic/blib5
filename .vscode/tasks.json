@@ -1,0 +1,39 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: Linux build blib5c.so",
+			"command": "/usr/bin/clang++-22",
+			"args": [
+				"-shared",
+				"-fPIC",
+				"-O2",
+				"-fcolor-diagnostics",
+				"-fansi-escape-codes",
+				"-g",
+				"-I${env:HOME}/.local/share/uv/python/cpython-3.11.14-linux-x86_64-gnu/include/python3.11",
+				"-L/home/ik/.local/share/uv/python/cpython-3.11.14-linux-x86_64-gnu/lib",
+				"-lpython3.11",
+				"-lpthread",
+				"-ldl",
+				"-lutil",
+				"-lm",
+				"main.cpp",
+				"-o",
+				"${workspaceFolder}/blib5c.so"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/blib5c"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "compiler: /usr/bin/clang++-22"
+		}
+	]
+}
