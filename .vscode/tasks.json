@@ -13,6 +13,7 @@
 				"-fansi-escape-codes",
 				"-g",
 				"-I${env:HOME}/.local/share/uv/python/cpython-3.11.14-linux-x86_64-gnu/include/python3.11",
+				"-I${workspaceFolder}/.venv/lib/python3.11/site-packages/numpy/core/include",
 				"-L/home/ik/.local/share/uv/python/cpython-3.11.14-linux-x86_64-gnu/lib",
 				"-lpython3.11",
 				"-lpthread",
@@ -21,10 +22,10 @@
 				"-lm",
 				"main.cpp",
 				"-o",
-				"${workspaceFolder}/blib5c.so"
+				"${workspaceFolder}/src/blib5/blib5c.so"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}/blib5c"
+				"cwd": "${workspaceFolder}/src/blib5c"
 			},
 			"problemMatcher": [
 				"$gcc"

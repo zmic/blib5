@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "~/.local/share/uv/python/cpython-3.11.14-linux-x86_64-gnu/include/python3.11/",
+                "${workspaceFolder}/.venv/lib/python3.11/site-packages/numpy/core/include"
+            ],
+            "defines": [],
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
