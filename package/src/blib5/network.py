@@ -104,6 +104,9 @@ def start_server(addon_name):
     if client_count == 1:
         _thread.start_new_thread(start_server_, ())
 
+def stop_server():
+    pass
+
 # 
 # client side = your script
 #
