@@ -3,9 +3,9 @@ name = "blib5"
 version = "0.1.0"
 description = "blib5"
 readme = "README.md"
-requires-python = "==3.13.11"
+requires-python = ">=3.13"
 dependencies = [
-    "bpy>=5.1.1",
+    #"bpy>=5.1.1",
     "dill>=0.4.1",
     "numpy ==2.3.4",
 ]

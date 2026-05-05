@@ -1,1 +1,1 @@
-.venv/bin/activate.ps1
+package/.venv/bin/activate.ps1

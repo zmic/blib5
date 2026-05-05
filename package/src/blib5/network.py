@@ -48,7 +48,7 @@ def receive_packet(s):
 ##########################################################################
 
 def execute_command(command, args, kwargs):
-    cprint(f"message: {command}({len(args)} arguments)")  
+    cprint(f"execute_command: {command}({len(args)} arguments)")  
     function = eval(command)
     return function(*args, **kwargs)
 
@@ -107,26 +107,30 @@ def start_server(addon_name):
 # 
 # client side = your script
 #
-def blender_connect():
+def connect():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((HOST, PORT))
-    def send_command(command, *args, **kwargs):
-        
-    return s
+    return s 
 
-def send_message(command, *args, **kwargs):
+def send_command(s, command, *args, **kwargs):
     if not isinstance(command, str):
-        command = f'{command.__module__}.{command.__qualname__}'
+        command = f'{command.__module__}.{command.__qualname__}'        
+    b = dill.dumps((command, args, kwargs))
+    send_packet(s, b)
+    data = receive_packet(s)
+    error, rv = dill.loads(data)
+    if error:
+        print(error)
+        raise RuntimeError("remote error")
+    return rv 
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-        b = dill.dumps((command, args, kwargs))
-        send_packet(s, b)
-        rv = receive_packet(s)
-        if 0 == rv.find(b'!!!'):
-            raise RuntimeError("Remote error: " + rv.decode()[3:])
-    return rv
+def blender_connect():
+    s = connect()
+    def send_command__(command, *args, **kwargs):
+        return send_command(s, command, *args, **kwargs)
+    return send_command__
 
+'''
 def remote(f, *args, **kwargs):
     send_message(f'{f.__module__}.{f.__qualname__}', *args, **kwargs)
 
@@ -134,3 +138,4 @@ if __name__ == '__main__':
     send_message("blib3.mesh.test1", 0, w=1)
 
     
+'''

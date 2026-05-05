@@ -1,12 +1,14 @@
 import bpy
 from blib5.module import reload_module_tree
-from blib5.network import start_server, send_message
+from blib5.network import start_server, stop_server
 from . import __main__
 
 bl_info = {
     "name": "blib5", 
     "category": "User",
-    "blender" : (5,1,1),
+    "author": "ik",
+    "blender": (5,1,1),
+    "support": "COMMUNITY",  
 }
 
 class operator_main(bpy.types.Operator):
@@ -24,6 +26,6 @@ def register():
     bpy.utils.register_class(operator_main)
 
 def unregister():
-    send_message("UNREGISTER", "blib5")
+    stop_server()
     bpy.utils.unregister_class(operator_main)
   
