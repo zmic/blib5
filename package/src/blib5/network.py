@@ -1,7 +1,9 @@
 import socket
+import sys
 import _thread
-import dill
 import traceback
+import importlib   # so remote client can all importlib
+import dill
 import bpy
 import blib5
 from .cprint import cprint
@@ -46,16 +48,19 @@ def receive_packet(s):
     return data
 
 ##########################################################################
+def add_path(path):
+    sys.path.append(path)
+    cprint(sys.path)
 
-def execute_command(command, args, kwargs):
-    cprint(f"execute_command: {command}({len(args)} arguments)")  
-    function = eval(command)
+def execute_function(function, args, kwargs):
+    cprint(f"execute_command: {function}({len(args)} arguments)")  
+    function = eval(function)
     return function(*args, **kwargs)
 
 def wrap_con(connection, command, args, kwargs):
     def run_in_main_thread():
         try:
-            rv = execute_command(command, args, kwargs)
+            rv = execute_function(command, args, kwargs)
         except Exception as error:            
             traceback_string = traceback.format_exc()
             rv = None

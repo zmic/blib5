@@ -48,7 +48,7 @@ def reload_module_tree(main_module):
                     S_reload.update(D[module])
                     last_modified_dict[path] = last_modified                    
                 if reload:
-                    if module.__name__ not in ['blib3.module2', 'blib3.network', 'blib3.timer']:
+                    if module.__name__ not in ['blib5.module', 'blib5.network', 'blib5.timer']:
                         cprint(f"reload: module {module.__name__}")
                         importlib.reload(module)
                 del D[module]
