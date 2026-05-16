@@ -7,5 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     #"bpy>=5.1.1",
     "dill>=0.4.1",
+    "ipykernel>=7.2.0",
+    "ipython>=9.13.0",
     "numpy ==2.3.4",
 ]

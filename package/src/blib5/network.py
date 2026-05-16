@@ -2,7 +2,7 @@ import socket
 import sys
 import _thread
 import traceback
-import importlib   # so remote client can all importlib
+import importlib   # so remote client can call importlib
 import dill
 import bpy
 import blib5
