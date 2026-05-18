@@ -56,7 +56,7 @@ def reload_module_tree(main_module):
 
 
 if __name__ == '__main__':
-    import blib5.network
+    import blib5.remote
     reload_module_tree(blib5)
 
 

@@ -128,7 +128,9 @@ def send_command(s, command, *args, **kwargs):
     data = receive_packet(s)
     error, rv = dill.loads(data)
     if error:
-        print(error)
+        print("Remote error:")
+        for L in error.split('\n'):
+            print("+  ", L)
         raise RuntimeError("remote error")
     return rv 
 
@@ -138,6 +140,7 @@ def blender_connect():
         return send_command(s, command, *args, **kwargs)
     return send_command__
 
+def import_lib()
 '''
 def remote(f, *args, **kwargs):
     send_message(f'{f.__module__}.{f.__qualname__}', *args, **kwargs)

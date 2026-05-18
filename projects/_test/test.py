@@ -1,5 +1,5 @@
 import importlib
-from blib5.network import blender_connect
+from blib5.remote import blender_connect
 
 def test1():
     send = blender_connect()
