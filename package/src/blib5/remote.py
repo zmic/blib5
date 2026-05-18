@@ -3,12 +3,14 @@ import sys
 import _thread
 import traceback
 import importlib   # so remote client can call importlib
+import types
+
 import dill
 import bpy
+
 import blib5
 from .cprint import cprint
 from .module import reload_module_tree
-
 
 
 ##########################################################################
@@ -48,9 +50,15 @@ def receive_packet(s):
     return data
 
 ##########################################################################
-def add_path(path):
+def add_path__(path):
     sys.path.append(path)
     cprint(sys.path)
+
+def import_module__(module):
+    cprint(f"importing {module}")
+    m = importlib.import_module(module)
+    base_module = sys.modules[m.__name__.split('.')[0]]
+    globals()[base_module.__name__] = base_module
 
 def execute_function(function, args, kwargs):
     cprint(f"execute_command: {function}({len(args)} arguments)")  
@@ -64,6 +72,8 @@ def wrap_con(connection, command, args, kwargs):
         except Exception as error:            
             traceback_string = traceback.format_exc()
             rv = None
+            for L in traceback_string.split('\n'):
+                cprint(L)
         else:
             traceback_string = None
         rv = dill.dumps((traceback_string, rv))
@@ -115,38 +125,32 @@ def stop_server():
 # 
 # client side = your script
 #
-def connect():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((HOST, PORT))
-    return s 
+class connection:
+    def __init__(self):
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.connect((HOST, PORT))
+    def command(self, command, *args, **kwargs):
+        if not isinstance(command, str):
+            command = f'{command.__module__}.{command.__qualname__}'        
+        b = dill.dumps((command, args, kwargs))
+        send_packet(self.s, b)
+        data = receive_packet(self.s)
+        error, rv = dill.loads(data)
+        if error:
+            print("Remote error:")
+            for L in error.split('\n'):
+                print("+  ", L)
+            raise RuntimeError("remote error")
+        return rv 
+    def import_lib(self, module):
+        if isinstance(module, types.ModuleType):
+            module = module.__name__
+        self.command('import_module__', module)
 
-def send_command(s, command, *args, **kwargs):
-    if not isinstance(command, str):
-        command = f'{command.__module__}.{command.__qualname__}'        
-    b = dill.dumps((command, args, kwargs))
-    send_packet(s, b)
-    data = receive_packet(s)
-    error, rv = dill.loads(data)
-    if error:
-        print("Remote error:")
-        for L in error.split('\n'):
-            print("+  ", L)
-        raise RuntimeError("remote error")
-    return rv 
 
-def blender_connect():
-    s = connect()
-    def send_command__(command, *args, **kwargs):
-        return send_command(s, command, *args, **kwargs)
-    return send_command__
-
-def import_lib()
 '''
-def remote(f, *args, **kwargs):
-    send_message(f'{f.__module__}.{f.__qualname__}', *args, **kwargs)
-
 if __name__ == '__main__':
     send_message("blib3.mesh.test1", 0, w=1)
+'''
 
     
-'''

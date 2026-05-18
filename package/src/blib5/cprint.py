@@ -11,7 +11,7 @@ def introspect_caller():
 
 def cprint(*args, **kwargs):
     caller_module_name, caller_function_name = introspect_caller()
-    header = f'[{caller_module_name}.{caller_function_name}] '
+    header = f'[{caller_module_name+'.'+caller_function_name: <40}] '
     print(header, *args, **kwargs)
 
 builtins.cprint = cprint
