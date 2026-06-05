@@ -1,6 +1,7 @@
 import bpy 
 
-def ensure_scene_collections(names, scene=None):
+
+def ensure_collections(names, scene=None):
     if scene is None:
         scene = bpy.context.scene
     S = set()
@@ -25,6 +26,7 @@ def ensure_scene_collections(names, scene=None):
         c = bpy.data.collections.get(L[-1])
         if not c:
             c = bpy.data.collections.new(L[-1])
-        parent_collection.children.link(c)
+        if not c.name in parent_collection.children:
+            parent_collection.children.link(c)
 
         

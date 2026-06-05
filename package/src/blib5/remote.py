@@ -61,7 +61,7 @@ def import_module__(module):
     globals()[base_module.__name__] = base_module
 
 def execute_function(function, args, kwargs):
-    cprint(f"execute_command: {function}({len(args)} arguments)")  
+    cprint(f"execute_function: {function}(...)")  
     function = eval(function)
     return function(*args, **kwargs)
 
@@ -72,6 +72,7 @@ def wrap_con(connection, command, args, kwargs):
         except Exception as error:            
             traceback_string = traceback.format_exc()
             rv = None
+            cprint()
             for L in traceback_string.split('\n'):
                 cprint(L)
         else:
