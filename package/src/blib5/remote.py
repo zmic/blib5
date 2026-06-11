@@ -22,7 +22,7 @@ from .module import reload_module_tree
 #
 HOST = '127.0.0.1'    # The remote host
 PORT = 18131
-client_count = 0            
+      
 
 def start_server_():
     start_server__()
@@ -82,46 +82,49 @@ def wrap_con(connection, command, args, kwargs):
         send_packet(connection, rv)
         #cprint(f"Done send {len(rv)} bytes response")
     return run_in_main_thread
-    
+
+
+#client_count = 0      
+#socket_object = None
+__data = [0, socket.socket(socket.AF_INET, socket.SOCK_STREAM)]
 
 def start_server__():
-    global client_count 
     cprint("Listening on {}:{}".format(HOST, PORT))
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((HOST, PORT))
-        s.listen(1)
+    s = __data[1]
+    s.bind((HOST, PORT))
+    s.listen(1)
+    while 1:
+        conn, addr = s.accept()
+        cprint('Connected by', addr)
         while 1:
-            conn, addr = s.accept()
-            cprint('Connected by', addr)
-            while 1:
-                data = receive_packet(conn)
-                if not data:
-                    break
-                try:
-                    command, args, kwargs = dill.loads(data)
-                except EOFError:
-                    continue
-                if command == 'UNREGISTER':
-                    client_count -= 1
-                    if client_count == 0:
-                        return
-                else:
-                    reload_module_tree(blib5) 
-                    run_in_main_thread = wrap_con(conn, command, args, kwargs)
-                    bpy.app.timers.register(run_in_main_thread)
-            del conn
-            cprint('Disconnected by', addr)
-
+            data = receive_packet(conn)
+            if not data:
+                break
+            try:
+                command, args, kwargs = dill.loads(data)
+            except EOFError:
+                continue
+            reload_module_tree(blib5) 
+            run_in_main_thread = wrap_con(conn, command, args, kwargs)
+            bpy.app.timers.register(run_in_main_thread)
+        del conn
+        cprint('Disconnected by', addr)
 
 def start_server(addon_name):
-    global client_count    
-    client_count += 1    
-    cprint(f"start_server() called by {addon_name}, {client_count=}")
-    if client_count == 1:
+    __data[0] += 1    
+    cprint(f"start_server() called by {addon_name}, {__data[0]}")
+    if __data[0] == 1:
         _thread.start_new_thread(start_server_, ())
 
 def stop_server():
-    pass
+    __data[0] -= 1   
+    cprint(f'{__data[0]}')
+    if __data[0] == 0:     
+        cprint('Stop server')
+        __data[1].close()
+        __data[1] = None
+
+
 
 # 
 # client side = your script

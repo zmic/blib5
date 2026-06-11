@@ -1,7 +1,7 @@
 from functools import wraps
 import inspect
 import bpy
-from blib3.household import delete_object_and_data_if_orphaned
+from .data import delete_object_and_data_if_orphaned
 
 _missing = object()
 def cache_unary_function_result(f):
