@@ -69,23 +69,17 @@ def wrap_con(connection, command, args, kwargs):
     def run_in_main_thread():
         try:
             rv = execute_function(command, args, kwargs)
+            rv = dill.dumps((None, rv))
         except Exception as error:            
             traceback_string = traceback.format_exc()
-            rv = None
             cprint()
             for L in traceback_string.split('\n'):
                 cprint(L)
-        else:
-            traceback_string = None
-        rv = dill.dumps((traceback_string, rv))
-        #cprint(f"Send {len(rv)} bytes")
+            rv = dill.dumps((traceback_string, None))
         send_packet(connection, rv)
-        #cprint(f"Done send {len(rv)} bytes response")
     return run_in_main_thread
 
 
-#client_count = 0      
-#socket_object = None
 __data = [0, socket.socket(socket.AF_INET, socket.SOCK_STREAM)]
 
 def start_server__():
@@ -97,6 +91,7 @@ def start_server__():
         conn, addr = s.accept()
         cprint('Connected by', addr)
         while 1:
+            cprint("Waiting for receive")
             data = receive_packet(conn)
             if not data:
                 break
